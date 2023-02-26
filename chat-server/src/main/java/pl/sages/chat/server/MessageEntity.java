@@ -1,10 +1,13 @@
 package pl.sages.chat.server;
 
+import lombok.Getter;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 
+@Getter
 public class MessageEntity {
     private String text;
     private List<User> recipients;

@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Conversation{
 
-    String Id;
+
     List<MessageEntity> msgs;
     String chatName;
     List<User> participants;
