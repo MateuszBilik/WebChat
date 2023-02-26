@@ -4,6 +4,8 @@ import pl.sages.chat.client.chat.WebSocketHandler;
 import pl.sages.chat.client.view.View;
 import pl.sages.chat.client.view.ViewHandler;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.WebSocket;
@@ -28,16 +30,27 @@ public class ChatClient {
 
         System.out.println(view.joinToChat(scanner.nextLine()));
 
-
+        new Thread( () -> {
+                System.out.println("in thread write");
         while (true) {
-            //webSocketHandler.getWebSocketListener().onText();
             String input = scanner.nextLine();
             if (!input.isEmpty()) {
                 String response = view.textHandler(input);
                 if (!input.equals("")) System.out.println(response);
             }
         }
+    });
 
+//        new Thread( () -> {
+//            System.out.println("in thread read");
+//            while (true) {
+//                var in = new BufferedReader(new InputStreamReader(
+//                        view.
+//                        we.getInputStream()));
+//
+//                view.readMsg()
+//            }
+//        });
 
     }
 

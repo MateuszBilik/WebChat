@@ -9,11 +9,30 @@ public class WebSocketHandler {
 
     private WebSocket.Listener webSocketListener;
 
-//    public WebSocket.Listener getWebSocketListener() {
-//        return webSocketListener;
-//    }
+    public WebSocket.Listener getWebSocketListener() {
+        return webSocketListener;
+    }
+
+
 
     public WebSocket start(){
+        createWebSocketListener();
+
+        WebSocket webSocket = HttpClient
+                .newHttpClient()
+                .newWebSocketBuilder().
+                buildAsync(URI.create("ws://localhost:8080/chat"), webSocketListener)
+                .join();
+
+
+
+        var shutdownHook = new Thread(() -> webSocket.sendClose(WebSocket.NORMAL_CLOSURE, "Exiting")
+                .join());
+        Runtime.getRuntime().addShutdownHook(shutdownHook);
+        return webSocket;
+    }
+
+    private void createWebSocketListener() {
         webSocketListener = new WebSocket.Listener() {
 
             @Override //TODO tu chyba trzeba nadpisac wszystko, kilka metod
@@ -27,19 +46,7 @@ public class WebSocketHandler {
                 WebSocket.Listener.super.onOpen(webSocket);
             }
         };
-
-        WebSocket webSocket = HttpClient
-                .newHttpClient()
-                .newWebSocketBuilder().
-                buildAsync(URI.create("ws://localhost:8080/chat"), webSocketListener)
-                .join();
-
-        var shutdownHook = new Thread(() -> webSocket.sendClose(WebSocket.NORMAL_CLOSURE, "Exiting")
-                .join());
-        Runtime.getRuntime().addShutdownHook(shutdownHook);
-        return webSocket;
     }
-
 
 
 }

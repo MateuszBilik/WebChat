@@ -10,5 +10,7 @@ public interface View {
 
     String joinToChat(String text);
 
+    String readMsg (CharSequence text);
+
 //    void sayHello();
 }

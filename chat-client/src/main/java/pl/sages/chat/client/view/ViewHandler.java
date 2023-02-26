@@ -46,4 +46,9 @@ public class ViewHandler implements View{
         }
         return result;
     }
+
+    @Override
+    public String readMsg (CharSequence text){
+        return chatService.readFromServer(text);
+    }
 }

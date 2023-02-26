@@ -6,6 +6,8 @@ import pl.sages.chat.client.view.View;
 import pl.sages.chat.client.view.ViewBuilder;
 import pl.sages.chat.client.view.ViewHandler;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.net.http.WebSocket;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -15,7 +17,9 @@ public class ChatService {
 
     Gson gson = new Gson();
     //WebSocket webSocket;
-    WebSocket webSocket = new WebSocketHandler().start();
+    WebSocketHandler webSocketHandler = new WebSocketHandler();
+    WebSocket webSocket = webSocketHandler.start();
+
     ViewBuilder viewBuilder = new ViewBuilder();
 
 //    public ChatService(WebSocket webSocket) {
@@ -44,5 +48,17 @@ public class ChatService {
 
     public void sendToServer (Object text) {
         webSocket.sendText(gson.toJson(text), false).join();
+
     }
+
+    public String  readFromServer (CharSequence text) {
+//       var in = new BufferedReader(new InputStreamReader(
+//                webSocketHandler.getWebSocketListener().onText(webSocket, text, false).);
+
+    return webSocketHandler.getWebSocketListener().onText(webSocket, text, false).toString();
+
+    }
+
+
+
 }

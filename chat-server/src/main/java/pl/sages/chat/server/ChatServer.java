@@ -10,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
+import java.util.HexFormat;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -43,16 +44,18 @@ public class ChatServer {
                             System.out.println("Waiting for a message!");
                             readResponse(in);
                             System.out.println("-----------------------------------------------");
-                            var response = ("response - test!")
+                            var response = ("response - test!sdfsdfsefsdfsdf")
                                     .getBytes(StandardCharsets.UTF_8);
-                            System.out.println(response.toString());
-                            System.out.println("lenght " + response.length);
+
+//                            System.out.println(response.toString());
+//                            System.out.println("lenght " + response.length);
                             out.write(response);
+                            out.flush();
 
                         }
                     }
-                }
 
+                }
         }
     }
 
