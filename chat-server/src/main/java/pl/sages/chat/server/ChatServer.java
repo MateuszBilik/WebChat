@@ -59,17 +59,26 @@ public class ChatServer {
         };
 
         byte[] encoded = new byte[len];
+        encoded[0] = 0x1;
+        encoded[1] = Integer.valueOf(len).byteValue();
+        encoded[2] = decodingKeyPattern[0];
+        encoded[3] = decodingKeyPattern[1];
+        encoded[4] = decodingKeyPattern[2];
+        encoded[5] = decodingKeyPattern[3];
 
-        for (int i = 0; i < len; i++) {
+
+        for (int i = 6; i < len + 6; i++) {
             encoded[i] = (byte) (decoded[i] ^ 1/decodingKeyPattern[i & 0x3]);
         }
-        out.write(0x1);
-        out.write(len);
-        out.write(decodingKeyPattern[0]);
-        out.write(decodingKeyPattern[1]);
-        out.write(decodingKeyPattern[2]);
-        out.write(decodingKeyPattern[3]);
-        out.write(encoded);
+
+
+//        out.write(0x1);
+//        out.write(len);
+//        out.write(decodingKeyPattern[0]);
+//        out.write(decodingKeyPattern[1]);
+//        out.write(decodingKeyPattern[2]);
+//        out.write(decodingKeyPattern[3]);
+//        out.write(encoded);
         System.out.println("Successfully sent the msg: " + msg);
         return out;
     }
