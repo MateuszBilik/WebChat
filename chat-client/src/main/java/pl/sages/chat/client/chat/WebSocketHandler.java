@@ -8,12 +8,9 @@ import java.util.concurrent.CompletionStage;
 public class WebSocketHandler {
 
     private WebSocket.Listener webSocketListener;
-
     public WebSocket.Listener getWebSocketListener() {
         return webSocketListener;
     }
-
-
 
     public WebSocket start(){
         createWebSocketListener();
@@ -23,8 +20,6 @@ public class WebSocketHandler {
                 .newWebSocketBuilder().
                 buildAsync(URI.create("ws://localhost:8080/chat"), webSocketListener)
                 .join();
-
-
 
         var shutdownHook = new Thread(() -> webSocket.sendClose(WebSocket.NORMAL_CLOSURE, "Exiting")
                 .join());
@@ -38,6 +33,7 @@ public class WebSocketHandler {
             @Override //TODO tu chyba trzeba nadpisac wszystko, kilka metod
             public CompletionStage<?> onText(WebSocket webSocket, CharSequence data, boolean last) {
                 System.out.println(data);
+                System.out.println("onText ");
                 return WebSocket.Listener.super.onText(webSocket, data, last);
             }
 

@@ -1,6 +1,7 @@
 package pl.sages.chat.server;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import javax.swing.*;
 import java.io.*;
@@ -18,12 +19,11 @@ import java.util.regex.Pattern;
 
 public class ChatServer {
 
+    static Gson gson = new GsonBuilder().enableComplexMapKeySerialization()
+            .create();
     static byte[] decodingKeyPattern;
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
-
-        Gson gson = new Gson();
         ServerSocket server = new ServerSocket(8080);
-
         System.out.println("""
                 Server has started on 127.0.0.1:8080
                 Waiting for a connection…
@@ -33,14 +33,13 @@ public class ChatServer {
                     System.out.println("A client connected!");
                     try (InputStream in = client.getInputStream();
                          OutputStream out = client.getOutputStream()
-                         //PrintWriter out = new PrintWriter(client.getOutputStream(), true);
                     ) {
-                        //PrintWriter printWriter = new PrintWriter(out, true);
                         validateWebsocketConnection(in, out);
                         while (true) {
                             System.out.println("Waiting for a message!");
                             readResponse(in);
                             writeResponse(out, "test Mat");
+                            out.flush();
                             System.out.println("-----------------------------------------------");
                         }
                     }
@@ -66,20 +65,11 @@ public class ChatServer {
         encoded[4] = decodingKeyPattern[2];
         encoded[5] = decodingKeyPattern[3];
 
-
-        for (int i = 6; i < len + 6; i++) {
-            encoded[i] = (byte) (decoded[i] ^ 1/decodingKeyPattern[i & 0x3]);
+        for (int i = 0; i < decoded.length; i++) {
+            encoded[i + 6] = (byte) (decoded[i] ^ (1/decodingKeyPattern[i & 0x3]));
         }
-
-
-//        out.write(0x1);
-//        out.write(len);
-//        out.write(decodingKeyPattern[0]);
-//        out.write(decodingKeyPattern[1]);
-//        out.write(decodingKeyPattern[2]);
-//        out.write(decodingKeyPattern[3]);
-//        out.write(encoded);
-        System.out.println("Successfully sent the msg: " + msg);
+        System.out.println("Successfully sent the DECODED: " + decoded.toString());
+        System.out.println("Successfully sent the DECODED: " + encoded.toString());
         return out;
     }
 
@@ -93,10 +83,9 @@ public class ChatServer {
         };
         byte[] decodingKey = new byte[]{(byte) in.read(), (byte) in.read(), (byte) in.read(), (byte) in.read()};
         decodingKeyPattern = decodingKey;
-        System.out.println(decodingKey);
         byte[] encodedMessage = in.readNBytes(messageLength);
-        System.out.println(encodedMessage);
         var decodedMessage = new String(decodeBytes(encodedMessage, decodingKey));
+        System.out.println(gson.fromJson(decodedMessage, MessageEntity.class).getTime());
         System.out.println("Incoming message: " + decodedMessage); //TODO obsluga wiadomosci, przechowywanie
         if (decodedMessage.contains("\u0003�Exiting")) {
             System.out.println("Client has disconnected!");

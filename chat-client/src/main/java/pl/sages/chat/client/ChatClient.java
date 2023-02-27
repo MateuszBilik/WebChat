@@ -15,20 +15,15 @@ import java.util.concurrent.CompletionStage;
 
 public class ChatClient {
 
-
     public static void main(String[] args) {
-
-//        WebSocketHandler webSocketHandler = new WebSocketHandler();
-//        WebSocket webSocket = webSocketHandler.start();
         Scanner scanner = new Scanner(System.in);
         View view = new ViewHandler();
 
         view.viewBuilder().sayHello();
         System.out.println(view.login(scanner.nextLine()));
-
         System.out.println(view.joinToChat(scanner.nextLine()));
 
-        new Thread( () -> {
+       // new Thread( () -> {
                 System.out.println("in thread write");
         while (true) {
             String input = scanner.nextLine();
@@ -36,19 +31,11 @@ public class ChatClient {
                 String response = view.textHandler(input);
                 if (!input.equals("")) System.out.println(response);
             }
-        }
-    });
 
-//        new Thread( () -> {
-//            System.out.println("in thread read");
-//            while (true) {
-//                var in = new BufferedReader(new InputStreamReader(
-//                        view.
-//                        we.getInputStream()));
-//
-//                view.readMsg()
-//            }
-//        });
+        }
+
+  //  });
+
 
     }
 

@@ -14,12 +14,6 @@ public class ViewHandler implements View{
         return viewBuilder;
     }
 
-    public ViewHandler() {
-        this.webSocket = webSocket;
-    }
-
-
-
     @Override
     public String login(String login) {
         chatService.login(login);

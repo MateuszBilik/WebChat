@@ -1,6 +1,7 @@
 package pl.sages.chat.client.chat;
 
 import com.google.gson.Gson;
+import lombok.Getter;
 import pl.sages.chat.client.MessageEntity;
 import pl.sages.chat.client.view.View;
 import pl.sages.chat.client.view.ViewBuilder;
@@ -17,19 +18,15 @@ public class ChatService {
 
     Gson gson = new Gson();
     //WebSocket webSocket;
+
     WebSocketHandler webSocketHandler = new WebSocketHandler();
     WebSocket webSocket = webSocketHandler.start();
-
     ViewBuilder viewBuilder = new ViewBuilder();
 
-//    public ChatService(WebSocket webSocket) {
-//        this.webSocket = webSocket;
-//    }
-
     public String sendMsg(String text) {
-        MessageEntity message = new MessageEntity(text, new ArrayList<>(), LocalDateTime.now().toString());
-        sendToServer(message); //TODO obsluga wiaodmosci i wysweitlanie wiadomosci, wysylac jsona
-        return "";
+        //MessageEntity message = new MessageEntity(text, new ArrayList<>(),null, LocalDateTime.now().toString());
+        sendToServer(text);
+        return "-";
     }
 
     public String connect() {
@@ -46,12 +43,13 @@ public class ChatService {
         return "joined";
     }
 
-    public void sendToServer (Object text) {
-        webSocket.sendText(gson.toJson(text), false).join();
+    public void sendToServer (String text) {
+        var msg = new MessageEntity(text, null, null, LocalDateTime.now().toString());
+        webSocket.sendText(gson.toJson(msg), false).join();
 
     }
 
-    public String  readFromServer (CharSequence text) {
+    public String readFromServer (CharSequence text) {
 //       var in = new BufferedReader(new InputStreamReader(
 //                webSocketHandler.getWebSocketListener().onText(webSocket, text, false).);
 
