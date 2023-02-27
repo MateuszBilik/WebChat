@@ -16,7 +16,6 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
 public class ChatServer {
 
     static Gson gson = new GsonBuilder().enableComplexMapKeySerialization()

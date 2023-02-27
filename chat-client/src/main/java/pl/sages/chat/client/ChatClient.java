@@ -24,14 +24,13 @@ public class ChatClient {
         System.out.println(view.joinToChat(scanner.nextLine()));
 
        // new Thread( () -> {
-                System.out.println("in thread write");
-        while (true) {
+                //System.out.println("in thread write");
+         while (true) {
             String input = scanner.nextLine();
             if (!input.isEmpty()) {
                 String response = view.textHandler(input);
                 if (!input.equals("")) System.out.println(response);
             }
-
         }
 
   //  });

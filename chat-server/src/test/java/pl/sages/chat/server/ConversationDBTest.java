@@ -3,20 +3,17 @@ package pl.sages.chat.server;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class ConversationDBTest {
 
     @Test
     void loadFromDB() throws IOException {
         ConversationDB conversationDB = new ConversationDB();
-        var expected =  conversationDB.LoadFromDB("test");
+        var expected =  conversationDB.loadFromDB("test");
 
         Assertions.assertEquals(expected.get(0).toString(), "test");
     }
@@ -43,7 +40,7 @@ class ConversationDBTest {
 
       //  Assertions.assertEquals(expectedMsg,
        //                 "\"text\":\"sample text\",\"recipients\":[{\"email\":\"user1\"},{\"email\":\"user2\"}],\"isReadMap\":");
-        var expected =  conversationDB.LoadFromDB("test");
+        var expected =  conversationDB.loadFromDB("test");
         Assertions.assertEquals("user3", expected);
 
     }

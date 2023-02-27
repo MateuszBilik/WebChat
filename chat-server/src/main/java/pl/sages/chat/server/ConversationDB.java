@@ -5,7 +5,10 @@ import com.google.gson.GsonBuilder;
 import lombok.Getter;
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Getter
 public class ConversationDB {
@@ -24,14 +27,9 @@ public class ConversationDB {
         return conversations.get(name);
     }
 
-    List<MessageEntity> LoadFromDB(String conversationName) throws IOException {
+    List<MessageEntity> loadFromDB(String conversationName) throws IOException {
         String path = "src/main/java/pl/sages/chat/server/Db/" + conversationName + ".txt";
-//        Scanner scanner = new Scanner(path);
-//        String msg = "";
-//        for (int i = 0; i < 5; i++) {
-//            if (scanner.hasNext()) msg += scanner.nextLine();
-//            msg += "/n";
-//        }
+
         List<MessageEntity> msgs = new ArrayList<>();
         try (BufferedReader br =
                      new BufferedReader(
@@ -44,26 +42,28 @@ public class ConversationDB {
         }
     }
 
-        String SaveToDB (String conversationName, MessageEntity message) throws IOException {
-            String path = "src/main/java/pl/sages/chat/server/Db/" + conversationName + ".txt";
-            File file = new File(path);
-            if (file.isFile()) {
-                addToFile(message, path);
-            } else {
-                file.createNewFile();
-                addToFile(message, path);
-            }
-            return gson.toJson(message);
-        }
+     public String saveToDB(String conversationName, MessageEntity message) throws IOException {
+        getConversation(conversationName).msgs().add(message);
 
-        private void addToFile (MessageEntity message, String path){
-            try (PrintWriter pw = new PrintWriter(
-                    new BufferedWriter(
-                            new FileWriter(path, true)));) {
-                pw.println(gson.toJson(message));
-                pw.flush();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+        String path = "src/main/java/pl/sages/chat/server/Db/" + conversationName + ".txt";
+        File file = new File(path);
+        if (file.isFile()) {
+            addToFile(message, path);
+        } else {
+            file.createNewFile();
+            addToFile(message, path);
+        }
+        return gson.toJson(message);
+    }
+
+    private void addToFile(MessageEntity message, String path) {
+        try (PrintWriter pw = new PrintWriter(
+                new BufferedWriter(
+                        new FileWriter(path, true)));) {
+            pw.println(gson.toJson(message));
+            pw.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
+}
