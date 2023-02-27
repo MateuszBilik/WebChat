@@ -1,10 +1,17 @@
 package pl.sages.chat.server;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.ToString;
 
-public record User(
-        String email
-) {
+@AllArgsConstructor
+@Getter
+public class User
+
+{
+    String email;
+
+
 
     @Override
     public String toString() {

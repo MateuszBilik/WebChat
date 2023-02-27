@@ -17,46 +17,61 @@ import java.util.regex.Pattern;
 
 
 public class ChatServer {
+
+    static byte[] decodingKeyPattern;
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
 
         Gson gson = new Gson();
-
-
-
         ServerSocket server = new ServerSocket(8080);
+
         System.out.println("""
                 Server has started on 127.0.0.1:8080
                 Waiting for a connection…
                 """);
         try (server) {
-
                 try (Socket client = server.accept()) { //TODO tylko 1 klient moze sie teraz laczyc, watki 38min
                     System.out.println("A client connected!");
                     try (InputStream in = client.getInputStream();
                          OutputStream out = client.getOutputStream()
                          //PrintWriter out = new PrintWriter(client.getOutputStream(), true);
                     ) {
-                                                                                       //PrintWriter printWriter = new PrintWriter(out, true);
+                        //PrintWriter printWriter = new PrintWriter(out, true);
                         validateWebsocketConnection(in, out);
-
-
                         while (true) {
                             System.out.println("Waiting for a message!");
                             readResponse(in);
+                            writeResponse(out, "test Mat");
                             System.out.println("-----------------------------------------------");
-                            var response = ("response - test!sdfsdfsefsdfsdf")
-                                    .getBytes(StandardCharsets.UTF_8);
-
-//                            System.out.println(response.toString());
-//                            System.out.println("lenght " + response.length);
-                            out.write(response);
-                            out.flush();
-
                         }
                     }
-
                 }
         }
+    }
+
+    private static OutputStream writeResponse(OutputStream out, String msg) throws IOException {
+        System.out.println("Writing msg: " + msg);
+        var decoded = msg.getBytes(StandardCharsets.UTF_8);
+        int len = decoded.length;
+        len = switch (len) {
+            case 127 -> throw new RuntimeException("Very long message!");
+            case 126 -> throw new RuntimeException("Longer message!");
+            default -> len + 128;
+        };
+
+        byte[] encoded = new byte[len];
+
+        for (int i = 0; i < len; i++) {
+            encoded[i] = (byte) (decoded[i] ^ 1/decodingKeyPattern[i & 0x3]);
+        }
+        out.write(0x1);
+        out.write(len);
+        out.write(decodingKeyPattern[0]);
+        out.write(decodingKeyPattern[1]);
+        out.write(decodingKeyPattern[2]);
+        out.write(decodingKeyPattern[3]);
+        out.write(encoded);
+        System.out.println("Successfully sent the msg: " + msg);
+        return out;
     }
 
     private static void readResponse(InputStream in) throws IOException {
@@ -68,6 +83,8 @@ public class ChatServer {
             default -> messageLength;
         };
         byte[] decodingKey = new byte[]{(byte) in.read(), (byte) in.read(), (byte) in.read(), (byte) in.read()};
+        decodingKeyPattern = decodingKey;
+        System.out.println(decodingKey);
         byte[] encodedMessage = in.readNBytes(messageLength);
         System.out.println(encodedMessage);
         var decodedMessage = new String(decodeBytes(encodedMessage, decodingKey));

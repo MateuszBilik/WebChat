@@ -1,6 +1,7 @@
 package pl.sages.chat.server;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import lombok.Getter;
 
 import java.io.*;
@@ -10,7 +11,8 @@ import java.util.*;
 public class ConversationDB {
 
     private final Map<String, Conversation> conversations = new HashMap<>();
-    private final Gson gson = new Gson();
+    private final Gson gson = new GsonBuilder().enableComplexMapKeySerialization()
+            .create();
 
     public Conversation getConversation(String nameOfConversation) {
         return conversations.containsKey(nameOfConversation) ?
@@ -22,7 +24,7 @@ public class ConversationDB {
         return conversations.get(name);
     }
 
-    String LoadFromDB(String conversationName) throws IOException {
+    List<MessageEntity> LoadFromDB(String conversationName) throws IOException {
         String path = "src/main/java/pl/sages/chat/server/Db/" + conversationName + ".txt";
 //        Scanner scanner = new Scanner(path);
 //        String msg = "";
@@ -30,31 +32,17 @@ public class ConversationDB {
 //            if (scanner.hasNext()) msg += scanner.nextLine();
 //            msg += "/n";
 //        }
+        List<MessageEntity> msgs = new ArrayList<>();
         try (BufferedReader br =
                      new BufferedReader(
                              new FileReader(path))) {
             String line;
-            long counter = 0;
-            //TODO
             while ((line = br.readLine()) != null) {
-                counter++;
+                msgs.add(gson.fromJson(line, MessageEntity.class));
             }
-
-
-
-            System.out.println(counter);
-
-//        try(PrintWriter pw = new PrintWriter(
-//                new BufferedWriter(
-//                        new FileWriter(path, true)));) {
-//            pw.println(gson.toJson(message));
-//            pw.flush();
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-
-            return msg;
+            return msgs;
         }
+    }
 
         String SaveToDB (String conversationName, MessageEntity message) throws IOException {
             String path = "src/main/java/pl/sages/chat/server/Db/" + conversationName + ".txt";

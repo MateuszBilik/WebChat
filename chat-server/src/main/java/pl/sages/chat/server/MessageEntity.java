@@ -1,6 +1,7 @@
 package pl.sages.chat.server;
 
 import lombok.Getter;
+import lombok.ToString;
 
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 
 @Getter
+@ToString
 public class MessageEntity {
     private String text;
     private List<User> recipients;
@@ -24,7 +26,7 @@ public class MessageEntity {
     private Map<User, Boolean> createMap (List<User> users, User fromUser){
         Map<User, Boolean> isReadMap = new HashMap<>();
         for (User user : users) {
-            if (user.email() == fromUser.email()){
+            if (user.getEmail() == fromUser.getEmail()){
                 isReadMap.put(user, true);
             } else {
                 isReadMap.put(user, false);

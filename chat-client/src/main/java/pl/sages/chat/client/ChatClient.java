@@ -20,10 +20,8 @@ public class ChatClient {
 
 //        WebSocketHandler webSocketHandler = new WebSocketHandler();
 //        WebSocket webSocket = webSocketHandler.start();
-
         Scanner scanner = new Scanner(System.in);
         View view = new ViewHandler();
-
 
         view.viewBuilder().sayHello();
         System.out.println(view.login(scanner.nextLine()));

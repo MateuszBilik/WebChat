@@ -14,11 +14,11 @@ import static org.junit.jupiter.api.Assertions.*;
 class ConversationDBTest {
 
     @Test
-    void loadFromDB() throws FileNotFoundException {
+    void loadFromDB() throws IOException {
         ConversationDB conversationDB = new ConversationDB();
-        String expected =  conversationDB.LoadFromDB("test.txt");
+        var expected =  conversationDB.LoadFromDB("test");
 
-        Assertions.assertEquals(expected, "test");
+        Assertions.assertEquals(expected.get(0).toString(), "test");
     }
 
     @Test
@@ -37,13 +37,13 @@ class ConversationDBTest {
                 "sample text", users, user1, LocalDateTime.now().toString());
 
         for (int i = 0; i < 1; i++) {
-            String expectedMsg = conversationDB.SaveToDB("test1.txt", msg);
-            String expectedMsg2 = conversationDB.SaveToDB("test.txt", msg2);
+            String expectedMsg = conversationDB.SaveToDB("test", msg);
+            String expectedMsg2 = conversationDB.SaveToDB("test", msg2);
         }
 
       //  Assertions.assertEquals(expectedMsg,
        //                 "\"text\":\"sample text\",\"recipients\":[{\"email\":\"user1\"},{\"email\":\"user2\"}],\"isReadMap\":");
-        String expected =  conversationDB.LoadFromDB("test.txt");
+        var expected =  conversationDB.LoadFromDB("test");
         Assertions.assertEquals("user3", expected);
 
     }
